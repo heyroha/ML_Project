@@ -1,0 +1,1715 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "876f9413",
+   "metadata": {
+    "papermill": {
+     "duration": 0.029037,
+     "end_time": "2023-12-01T10:28:45.845475",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:45.816438",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 강의 영상 : https://youtu.be/Jh3rJaZlEg0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "560481d4",
+   "metadata": {
+    "_cell_guid": "af4252ad-f822-45d3-b9c2-f26af7608ef4",
+    "_uuid": "de34d146-4c69-4b7c-82f6-11d6287f6094",
+    "execution": {
+     "iopub.execute_input": "2021-10-07T06:47:44.152391Z",
+     "iopub.status.busy": "2021-10-07T06:47:44.152048Z",
+     "iopub.status.idle": "2021-10-07T06:47:44.18282Z",
+     "shell.execute_reply": "2021-10-07T06:47:44.182194Z",
+     "shell.execute_reply.started": "2021-10-07T06:47:44.152311Z"
+    },
+    "jupyter": {
+     "outputs_hidden": false
+    },
+    "papermill": {
+     "duration": 0.027575,
+     "end_time": "2023-12-01T10:28:45.901660",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:45.874085",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 문제1\n",
+    "- 데이터셋(basic1.csv)의 'f5' 컬럼을 기준으로 상위 10개의 데이터를 구하고,\n",
+    "- 'f5'컬럼 10개 중 최소값으로 데이터를 대체한 후, \n",
+    "- 'age'컬럼에서 80 이상인 데이터의'f5 컬럼 평균값 구하기"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "549cccaa",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:45.976152Z",
+     "iopub.status.busy": "2023-12-01T10:28:45.975137Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.013050Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.013680Z",
+     "shell.execute_reply.started": "2023-12-01T10:13:37.682095Z"
+    },
+    "papermill": {
+     "duration": 0.08206,
+     "end_time": "2023-12-01T10:28:46.014028",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:45.931968",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>age</th>\n",
+       "      <th>city</th>\n",
+       "      <th>f1</th>\n",
+       "      <th>f2</th>\n",
+       "      <th>f3</th>\n",
+       "      <th>f4</th>\n",
+       "      <th>f5</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>id01</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ENFJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>id02</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>70.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ENFJ</td>\n",
+       "      <td>60.339826</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>id03</td>\n",
+       "      <td>27.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>61.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISTJ</td>\n",
+       "      <td>17.252986</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>id04</td>\n",
+       "      <td>75.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>52.667078</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>id05</td>\n",
+       "      <td>24.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>85.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFJ</td>\n",
+       "      <td>29.269869</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     id   age city    f1  f2   f3    f4         f5\n",
+       "0  id01   2.0   서울   NaN   0  NaN  ENFJ  91.297791\n",
+       "1  id02   9.0   서울  70.0   1  NaN  ENFJ  60.339826\n",
+       "2  id03  27.0   서울  61.0   1  NaN  ISTJ  17.252986\n",
+       "3  id04  75.0   서울   NaN   2  NaN  INFP  52.667078\n",
+       "4  id05  24.0   서울  85.0   2  NaN  ISFJ  29.269869"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 라이브러리 및 데이터 불러오기\n",
+    "import pandas as pd\n",
+    "\n",
+    "df = pd.read_csv('../input/bigdatacertificationkr/basic1.csv')\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "0d7fd466",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.075082Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.074035Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.100165Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.099561Z",
+     "shell.execute_reply.started": "2023-12-01T10:13:37.738715Z"
+    },
+    "papermill": {
+     "duration": 0.057382,
+     "end_time": "2023-12-01T10:28:46.100324",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.042942",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>age</th>\n",
+       "      <th>city</th>\n",
+       "      <th>f1</th>\n",
+       "      <th>f2</th>\n",
+       "      <th>f3</th>\n",
+       "      <th>f4</th>\n",
+       "      <th>f5</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>id11</td>\n",
+       "      <td>40.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>68.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ENFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>id98</td>\n",
+       "      <td>39.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>58.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>id10</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>74.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>76</th>\n",
+       "      <td>id77</td>\n",
+       "      <td>77.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>31.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>98</th>\n",
+       "      <td>id99</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>47.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESFJ</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>91</th>\n",
+       "      <td>id92</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>78.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>86</th>\n",
+       "      <td>id87</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>71</th>\n",
+       "      <td>id72</td>\n",
+       "      <td>8.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTJ</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>id12</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>id20</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>51.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INTJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      id   age city    f1  f2   f3    f4         f5\n",
+       "10  id11  40.0   서울  68.0   0  NaN  ENFP  98.429899\n",
+       "97  id98  39.0   경기  58.0   2  NaN  INFP  98.429899\n",
+       "9   id10  95.0   서울  74.0   1  NaN  ISFP  98.429899\n",
+       "76  id77  77.0   경기  31.0   0  NaN  INFP  98.429899\n",
+       "98  id99   1.0   경기  47.0   0  NaN  ESFJ  97.381034\n",
+       "91  id92  97.0   경기  78.0   1  NaN  INFP  97.381034\n",
+       "86  id87  19.0   경기   NaN   1  NaN  ISFP  97.381034\n",
+       "71  id72   8.0   경기  97.0   0  NaN  ESTJ  97.381034\n",
+       "11  id12  20.0   서울   NaN   0  NaN  ESTP  91.297791\n",
+       "19  id20  11.0   서울  51.0   1  NaN  INTJ  91.297791"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#상위 10개 값\n",
+    "df1 = df.sort_values('f5',ascending = False).head(10)\n",
+    "df1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "46070926",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.164868Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.163665Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.169135Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.169685Z",
+     "shell.execute_reply.started": "2023-12-01T10:13:37.761118Z"
+    },
+    "papermill": {
+     "duration": 0.040843,
+     "end_time": "2023-12-01T10:28:46.169911",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.129068",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "df1['f5'] = df1.f5.min()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "56be978e",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.232062Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.231003Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.238042Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.238564Z",
+     "shell.execute_reply.started": "2023-12-01T10:13:44.612736Z"
+    },
+    "papermill": {
+     "duration": 0.040015,
+     "end_time": "2023-12-01T10:28:46.238764",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.198749",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "91.29779092"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df1[df1.age >= 80].f5.mean()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5634051f",
+   "metadata": {
+    "papermill": {
+     "duration": 0.028833,
+     "end_time": "2023-12-01T10:28:46.298200",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.269367",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## **----풀이----**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "0a9554f0",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.376920Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.363981Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.379668Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.380246Z",
+     "shell.execute_reply.started": "2023-11-30T07:42:32.522475Z"
+    },
+    "papermill": {
+     "duration": 0.052768,
+     "end_time": "2023-12-01T10:28:46.380444",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.327676",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>age</th>\n",
+       "      <th>city</th>\n",
+       "      <th>f1</th>\n",
+       "      <th>f2</th>\n",
+       "      <th>f3</th>\n",
+       "      <th>f4</th>\n",
+       "      <th>f5</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>id11</td>\n",
+       "      <td>40.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>68.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ENFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>id98</td>\n",
+       "      <td>39.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>58.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>id10</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>74.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>76</th>\n",
+       "      <td>id77</td>\n",
+       "      <td>77.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>31.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>98.429899</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>98</th>\n",
+       "      <td>id99</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>47.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESFJ</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>91</th>\n",
+       "      <td>id92</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>78.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>86</th>\n",
+       "      <td>id87</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>71</th>\n",
+       "      <td>id72</td>\n",
+       "      <td>8.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTJ</td>\n",
+       "      <td>97.381034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>id12</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>id20</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>51.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INTJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      id   age city    f1  f2   f3    f4         f5\n",
+       "10  id11  40.0   서울  68.0   0  NaN  ENFP  98.429899\n",
+       "97  id98  39.0   경기  58.0   2  NaN  INFP  98.429899\n",
+       "9   id10  95.0   서울  74.0   1  NaN  ISFP  98.429899\n",
+       "76  id77  77.0   경기  31.0   0  NaN  INFP  98.429899\n",
+       "98  id99   1.0   경기  47.0   0  NaN  ESFJ  97.381034\n",
+       "91  id92  97.0   경기  78.0   1  NaN  INFP  97.381034\n",
+       "86  id87  19.0   경기   NaN   1  NaN  ISFP  97.381034\n",
+       "71  id72   8.0   경기  97.0   0  NaN  ESTJ  97.381034\n",
+       "11  id12  20.0   서울   NaN   0  NaN  ESTP  91.297791\n",
+       "19  id20  11.0   서울  51.0   1  NaN  INTJ  91.297791"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# f5컬럼을 기준으로 내림차순 정렬\n",
+    "df = df.sort_values('f5', ascending=False)\n",
+    "df.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "8b40b481",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.447131Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.443433Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.450828Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.451397Z",
+     "shell.execute_reply.started": "2023-11-30T07:42:33.299619Z"
+    },
+    "papermill": {
+     "duration": 0.041318,
+     "end_time": "2023-12-01T10:28:46.451595",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.410277",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "91.29779092"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 최소값 찾기\n",
+    "min = df['f5'][:10].min()\n",
+    "# min = 91.297791\n",
+    "min"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "5f9e85aa",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.518401Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.517587Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.537805Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.537230Z",
+     "shell.execute_reply.started": "2023-12-01T10:13:48.466869Z"
+    },
+    "papermill": {
+     "duration": 0.056163,
+     "end_time": "2023-12-01T10:28:46.537971",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.481808",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>age</th>\n",
+       "      <th>city</th>\n",
+       "      <th>f1</th>\n",
+       "      <th>f2</th>\n",
+       "      <th>f3</th>\n",
+       "      <th>f4</th>\n",
+       "      <th>f5</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>id11</td>\n",
+       "      <td>40.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>68.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ENFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>id98</td>\n",
+       "      <td>39.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>58.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>id10</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>74.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>76</th>\n",
+       "      <td>id77</td>\n",
+       "      <td>77.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>31.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>98</th>\n",
+       "      <td>id99</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>47.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESFJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>91</th>\n",
+       "      <td>id92</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>78.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>86</th>\n",
+       "      <td>id87</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>71</th>\n",
+       "      <td>id72</td>\n",
+       "      <td>8.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>id12</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTP</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>id20</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>서울</td>\n",
+       "      <td>51.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>INTJ</td>\n",
+       "      <td>91.297791</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      id   age city    f1  f2   f3    f4         f5\n",
+       "10  id11  40.0   서울  68.0   0  NaN  ENFP  91.297791\n",
+       "97  id98  39.0   경기  58.0   2  NaN  INFP  91.297791\n",
+       "9   id10  95.0   서울  74.0   1  NaN  ISFP  91.297791\n",
+       "76  id77  77.0   경기  31.0   0  NaN  INFP  91.297791\n",
+       "98  id99   1.0   경기  47.0   0  NaN  ESFJ  91.297791\n",
+       "91  id92  97.0   경기  78.0   1  NaN  INFP  91.297791\n",
+       "86  id87  19.0   경기   NaN   1  NaN  ISFP  91.297791\n",
+       "71  id72   8.0   경기  97.0   0  NaN  ESTJ  91.297791\n",
+       "11  id12  20.0   서울   NaN   0  NaN  ESTP  91.297791\n",
+       "19  id20  11.0   서울  51.0   1  NaN  INTJ  91.297791"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.iloc[:10,-1] = min\n",
+    "df.head(10)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "964b6a52",
+   "metadata": {
+    "papermill": {
+     "duration": 0.030464,
+     "end_time": "2023-12-01T10:28:46.599338",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.568874",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 문제2\n",
+    "- 데이터셋(basic1.csv)의 앞에서 순서대로 70% 데이터만 활용해서,\n",
+    "- 'f1'컬럼 결측치를 중앙값으로 채우기 전후의 표준편차를 구하고\n",
+    "- 두 표준편차 차이 계산하기"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "a3e1f707",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.668035Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.667252Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.674327Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.673591Z",
+     "shell.execute_reply.started": "2023-12-01T10:14:35.180045Z"
+    },
+    "papermill": {
+     "duration": 0.044064,
+     "end_time": "2023-12-01T10:28:46.674491",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.630427",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# 라이브러리 및 데이터 불러오기\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "\n",
+    "df = pd.read_csv('../input/bigdatacertificationkr/basic1.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "bf16948d",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.745556Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.744725Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.752260Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.751481Z",
+     "shell.execute_reply.started": "2023-12-01T10:19:51.261128Z"
+    },
+    "papermill": {
+     "duration": 0.04616,
+     "end_time": "2023-12-01T10:28:46.752435",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.706275",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/opt/conda/lib/python3.7/site-packages/ipykernel_launcher.py:7: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  import sys\n"
+     ]
+    }
+   ],
+   "source": [
+    "# df.head()\n",
+    "# df.info() #총 100개 행\n",
+    "df1 = df[:70]\n",
+    "#f1컬럼 결측치 채우기 전의 표준편차 std\n",
+    "std_1 = df1['f1'].std()\n",
+    "med = df1.f1.median()\n",
+    "df1['f1_n'] = df1['f1'].fillna(med)\n",
+    "std_2 = df1['f1_n'].std()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "27134f6a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.822297Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.821287Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.824830Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.825397Z",
+     "shell.execute_reply.started": "2023-12-01T10:20:17.197075Z"
+    },
+    "papermill": {
+     "duration": 0.040924,
+     "end_time": "2023-12-01T10:28:46.825582",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.784658",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "3.2965018033960725\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(std_1 - std_2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1c9e6d3b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.031981,
+     "end_time": "2023-12-01T10:28:46.890083",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.858102",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## **----풀이-----**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "dec647e3",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:46.970988Z",
+     "iopub.status.busy": "2023-12-01T10:28:46.969869Z",
+     "iopub.status.idle": "2023-12-01T10:28:46.978152Z",
+     "shell.execute_reply": "2023-12-01T10:28:46.978722Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.388349Z"
+    },
+    "papermill": {
+     "duration": 0.054687,
+     "end_time": "2023-12-01T10:28:46.978926",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:46.924239",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>age</th>\n",
+       "      <th>city</th>\n",
+       "      <th>f1</th>\n",
+       "      <th>f2</th>\n",
+       "      <th>f3</th>\n",
+       "      <th>f4</th>\n",
+       "      <th>f5</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>65</th>\n",
+       "      <td>id66</td>\n",
+       "      <td>87.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>17.252986</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>66</th>\n",
+       "      <td>id67</td>\n",
+       "      <td>66.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>52.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFJ</td>\n",
+       "      <td>73.586397</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>67</th>\n",
+       "      <td>id68</td>\n",
+       "      <td>35.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>45.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISFP</td>\n",
+       "      <td>67.886373</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>68</th>\n",
+       "      <td>id69</td>\n",
+       "      <td>75.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>85.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ESTJ</td>\n",
+       "      <td>69.730313</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>69</th>\n",
+       "      <td>id70</td>\n",
+       "      <td>-9.0</td>\n",
+       "      <td>경기</td>\n",
+       "      <td>96.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>ISTP</td>\n",
+       "      <td>48.431184</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      id   age city    f1  f2   f3    f4         f5\n",
+       "65  id66  87.0   경기   NaN   1  NaN  ISFP  17.252986\n",
+       "66  id67  66.0   경기  52.0   1  NaN  ISFJ  73.586397\n",
+       "67  id68  35.0   경기  45.0   2  NaN  ISFP  67.886373\n",
+       "68  id69  75.0   경기  85.0   0  NaN  ESTJ  69.730313\n",
+       "69  id70  -9.0   경기  96.0   1  NaN  ISTP  48.431184"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 데이터 나누기 방법1\n",
+    "data70 = df.iloc[:70]\n",
+    "data30 = df.iloc[70:]\n",
+    "\n",
+    "# [심화학습] 데이터 나누기 방법2\n",
+    "# data70, data30 = np.split(df, [int(.7*len(df))])\n",
+    "\n",
+    "# [심화학습] 데이터 나누기 방법3 (랜덤으로 샘플링하라고 했을 때!!)\n",
+    "# data70 = df.sample(frac = 0.7)\n",
+    "# data70 = df.drop(data70.index)\n",
+    "\n",
+    "data70.tail()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "874324e4",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.055421Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.054457Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.057934Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.058491Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.405959Z"
+    },
+    "papermill": {
+     "duration": 0.046643,
+     "end_time": "2023-12-01T10:28:47.058675",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.012032",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "id       0\n",
+       "age      0\n",
+       "city     0\n",
+       "f1      23\n",
+       "f2       0\n",
+       "f3      67\n",
+       "f4       0\n",
+       "f5       0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "## 결측치 확인\n",
+    "data70.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "5fda507c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.131111Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.130042Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.136374Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.136906Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.422621Z"
+    },
+    "papermill": {
+     "duration": 0.045428,
+     "end_time": "2023-12-01T10:28:47.137101",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.091673",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "17.98727579865276"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "## 결측치 채우기 전 f1컬럼 표준편자\n",
+    "std1 = data70['f1'].std()\n",
+    "std1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "f66786b9",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.210377Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.207293Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.213133Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.213658Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.432783Z"
+    },
+    "papermill": {
+     "duration": 0.043274,
+     "end_time": "2023-12-01T10:28:47.213860",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.170586",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "68.0"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "## 중앙값 확인\n",
+    "med=data70['f1'].median()\n",
+    "med"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "0148585e",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.285441Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.284326Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.291620Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.292203Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.441588Z"
+    },
+    "papermill": {
+     "duration": 0.044813,
+     "end_time": "2023-12-01T10:28:47.292389",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.247576",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/opt/conda/lib/python3.7/site-packages/ipykernel_launcher.py:2: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  \n"
+     ]
+    }
+   ],
+   "source": [
+    "## 중앙값으로 채우기\n",
+    "data70['f1'] = data70['f1'].fillna(med)\n",
+    "\n",
+    "## 다른 방법들\n",
+    "# data70['f1']= data70['f1'].replace(np.nan, med)\n",
+    "# data70 = data70.fillna(value=med)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "73588cf8",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.366096Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.365028Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.373939Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.374817Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.454804Z"
+    },
+    "papermill": {
+     "duration": 0.047083,
+     "end_time": "2023-12-01T10:28:47.375021",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.327938",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "id       0\n",
+       "age      0\n",
+       "city     0\n",
+       "f1       0\n",
+       "f2       0\n",
+       "f3      67\n",
+       "f4       0\n",
+       "f5       0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "## 결측치 확인\n",
+    "data70.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "293815f2",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.449970Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.449229Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.452291Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.453009Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.470121Z"
+    },
+    "papermill": {
+     "duration": 0.04379,
+     "end_time": "2023-12-01T10:28:47.453196",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.409406",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "14.690773995256688"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "## 결측치를 채운 후 표준편차 구하기\n",
+    "std2 = data70['f1'].std()\n",
+    "std2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "7a4573f6",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.526804Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.526083Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.532353Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.531705Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.479319Z"
+    },
+    "papermill": {
+     "duration": 0.044025,
+     "end_time": "2023-12-01T10:28:47.532518",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.488493",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "3.2965018033960725\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(std1-std2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "43b92df0",
+   "metadata": {
+    "papermill": {
+     "duration": 0.03465,
+     "end_time": "2023-12-01T10:28:47.602712",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.568062",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 문제3\n",
+    "- 데이터셋(basic1.csv)의 'age'컬럼의 이상치를 더하시오!\n",
+    "- 단, 평균으로부터 '표준편차*1.5'를 벗어나는 영역을 이상치라고 판단함"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "a6f96534",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.679997Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.679235Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.685453Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.686051Z",
+     "shell.execute_reply.started": "2023-12-01T10:21:57.656093Z"
+    },
+    "papermill": {
+     "duration": 0.047929,
+     "end_time": "2023-12-01T10:28:47.686236",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.638307",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# 라이브러리 및 데이터 불러오기\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "\n",
+    "df = pd.read_csv('../input/bigdatacertificationkr/basic1.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "b715d8be",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.761895Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.761168Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.772039Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.771457Z",
+     "shell.execute_reply.started": "2023-12-01T10:27:34.075891Z"
+    },
+    "papermill": {
+     "duration": 0.05033,
+     "end_time": "2023-12-01T10:28:47.772196",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.721866",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "473.5"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "m = df['age'].mean()\n",
+    "std = df['age'].std()\n",
+    "df[((m + 1.5 *std) < df['age'])| ((m - 1.5 *std) > df['age'])].age.sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "864d62bc",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.849181Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.848456Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.851418Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.852025Z",
+     "shell.execute_reply.started": "2023-12-01T10:25:06.329537Z"
+    },
+    "papermill": {
+     "duration": 0.044351,
+     "end_time": "2023-12-01T10:28:47.852209",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.807858",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "96.62713778388306"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "(m + 1.5 *std)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "id": "9cd61ed4",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:47.929125Z",
+     "iopub.status.busy": "2023-12-01T10:28:47.928345Z",
+     "iopub.status.idle": "2023-12-01T10:28:47.935683Z",
+     "shell.execute_reply": "2023-12-01T10:28:47.934998Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.504517Z"
+    },
+    "papermill": {
+     "duration": 0.04741,
+     "end_time": "2023-12-01T10:28:47.935860",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.888450",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "5.298862216116952 96.62713778388306\n"
+     ]
+    }
+   ],
+   "source": [
+    "std = df['age'].std() * 1.5\n",
+    "mean = df['age'].mean()\n",
+    "\n",
+    "min_out = mean - std\n",
+    "max_out = mean + std\n",
+    "print(min_out, max_out)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "c5d95835",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T10:28:48.017891Z",
+     "iopub.status.busy": "2023-12-01T10:28:48.016912Z",
+     "iopub.status.idle": "2023-12-01T10:28:48.020884Z",
+     "shell.execute_reply": "2023-12-01T10:28:48.021469Z",
+     "shell.execute_reply.started": "2021-12-10T03:30:39.51219Z"
+    },
+    "papermill": {
+     "duration": 0.049523,
+     "end_time": "2023-12-01T10:28:48.021653",
+     "exception": false,
+     "start_time": "2023-12-01T10:28:47.972130",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "473.5"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 이상치 age합\n",
+    "df[(df['age']>max_out)|(df['age']<min_out)]['age'].sum()\n",
+    "\n",
+    "# 다르게 작성방법\n",
+    "# df.loc[(df['age'] > max)]['age'].sum() + df.loc[(df['age']< min)]['age'].sum()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "datasetId": 1633303,
+     "sourceId": 7088048,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "dockerImageVersionId": 30129,
+   "isGpuEnabled": false,
+   "isInternetEnabled": false,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.10"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 12.510391,
+   "end_time": "2023-12-01T10:28:48.668519",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2023-12-01T10:28:36.158128",
+   "version": "2.3.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
