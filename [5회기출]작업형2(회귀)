@@ -1,0 +1,665 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "0e89b528",
+   "metadata": {
+    "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
+    "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:07.581796Z",
+     "iopub.status.busy": "2023-12-01T16:17:07.581266Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.100817Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.099402Z"
+    },
+    "papermill": {
+     "duration": 0.530836,
+     "end_time": "2023-12-01T16:17:08.104066",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:07.573230",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/kaggle/input/big-data-analytics-certification-kr-2023-5th/sample_submission.csv\n",
+      "/kaggle/input/big-data-analytics-certification-kr-2023-5th/train.csv\n",
+      "/kaggle/input/big-data-analytics-certification-kr-2023-5th/test.csv\n"
+     ]
+    }
+   ],
+   "source": [
+    "# This Python 3 environment comes with many helpful analytics libraries installed\n",
+    "# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python\n",
+    "# For example, here's several helpful packages to load\n",
+    "\n",
+    "import numpy as np # linear algebra\n",
+    "import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)\n",
+    "\n",
+    "# Input data files are available in the read-only \"../input/\" directory\n",
+    "# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory\n",
+    "\n",
+    "import os\n",
+    "for dirname, _, filenames in os.walk('/kaggle/input'):\n",
+    "    for filename in filenames:\n",
+    "        print(os.path.join(dirname, filename))\n",
+    "\n",
+    "# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using \"Save & Run All\" \n",
+    "# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "00e9d1f5",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.119559Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.118884Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.164068Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.162664Z"
+    },
+    "papermill": {
+     "duration": 0.055337,
+     "end_time": "2023-12-01T16:17:08.167238",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.111901",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "test = pd.read_csv('../input/big-data-analytics-certification-kr-2023-5th/test.csv')\n",
+    "train = pd.read_csv('../input/big-data-analytics-certification-kr-2023-5th/train.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "c8d3f008",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.180201Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.179632Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.213548Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.212297Z"
+    },
+    "papermill": {
+     "duration": 0.043811,
+     "end_time": "2023-12-01T16:17:08.216463",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.172652",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>model</th>\n",
+       "      <th>year</th>\n",
+       "      <th>transmission</th>\n",
+       "      <th>mileage</th>\n",
+       "      <th>fuelType</th>\n",
+       "      <th>tax</th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>engineSize</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>S-MAX</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>23905</td>\n",
+       "      <td>Diesel</td>\n",
+       "      <td>125</td>\n",
+       "      <td>56.5</td>\n",
+       "      <td>2.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Fiesta</td>\n",
+       "      <td>2018</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>16895</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>145</td>\n",
+       "      <td>40.3</td>\n",
+       "      <td>1.5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Kuga</td>\n",
+       "      <td>2017</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>12109</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>165</td>\n",
+       "      <td>45.6</td>\n",
+       "      <td>1.5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Kuga</td>\n",
+       "      <td>2018</td>\n",
+       "      <td>Semi-Auto</td>\n",
+       "      <td>13940</td>\n",
+       "      <td>Diesel</td>\n",
+       "      <td>145</td>\n",
+       "      <td>58.9</td>\n",
+       "      <td>1.5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Fiesta</td>\n",
+       "      <td>2013</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>31690</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>30</td>\n",
+       "      <td>54.3</td>\n",
+       "      <td>1.2</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     model  year transmission  mileage fuelType  tax   mpg  engineSize\n",
+       "0    S-MAX  2016       Manual    23905   Diesel  125  56.5         2.0\n",
+       "1   Fiesta  2018       Manual    16895   Petrol  145  40.3         1.5\n",
+       "2     Kuga  2017       Manual    12109   Petrol  165  45.6         1.5\n",
+       "3     Kuga  2018    Semi-Auto    13940   Diesel  145  58.9         1.5\n",
+       "4   Fiesta  2013       Manual    31690   Petrol   30  54.3         1.2"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "2bb4b643",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.230182Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.229695Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.247061Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.245757Z"
+    },
+    "papermill": {
+     "duration": 0.02769,
+     "end_time": "2023-12-01T16:17:08.249750",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.222060",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>model</th>\n",
+       "      <th>year</th>\n",
+       "      <th>price</th>\n",
+       "      <th>transmission</th>\n",
+       "      <th>mileage</th>\n",
+       "      <th>fuelType</th>\n",
+       "      <th>tax</th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>engineSize</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>EcoSport</td>\n",
+       "      <td>2017</td>\n",
+       "      <td>10298</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>25013</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>150</td>\n",
+       "      <td>53.3</td>\n",
+       "      <td>1.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Focus</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>10491</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>30970</td>\n",
+       "      <td>Diesel</td>\n",
+       "      <td>0</td>\n",
+       "      <td>74.3</td>\n",
+       "      <td>1.5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>S-MAX</td>\n",
+       "      <td>2017</td>\n",
+       "      <td>13498</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>60200</td>\n",
+       "      <td>Diesel</td>\n",
+       "      <td>150</td>\n",
+       "      <td>56.5</td>\n",
+       "      <td>2.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Fiesta</td>\n",
+       "      <td>2018</td>\n",
+       "      <td>10600</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>27380</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>145</td>\n",
+       "      <td>56.5</td>\n",
+       "      <td>1.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Fiesta</td>\n",
+       "      <td>2018</td>\n",
+       "      <td>11000</td>\n",
+       "      <td>Manual</td>\n",
+       "      <td>7724</td>\n",
+       "      <td>Petrol</td>\n",
+       "      <td>145</td>\n",
+       "      <td>65.7</td>\n",
+       "      <td>1.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "       model  year  price transmission  mileage fuelType  tax   mpg  \\\n",
+       "0   EcoSport  2017  10298       Manual    25013   Petrol  150  53.3   \n",
+       "1      Focus  2016  10491       Manual    30970   Diesel    0  74.3   \n",
+       "2      S-MAX  2017  13498       Manual    60200   Diesel  150  56.5   \n",
+       "3     Fiesta  2018  10600       Manual    27380   Petrol  145  56.5   \n",
+       "4     Fiesta  2018  11000       Manual     7724   Petrol  145  65.7   \n",
+       "\n",
+       "   engineSize  \n",
+       "0         1.0  \n",
+       "1         1.5  \n",
+       "2         2.0  \n",
+       "3         1.0  \n",
+       "4         1.0  "
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "c11eec1a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.264202Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.263688Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.297487Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.296076Z"
+    },
+    "papermill": {
+     "duration": 0.044851,
+     "end_time": "2023-12-01T16:17:08.300446",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.255595",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.frame.DataFrame'>\n",
+      "RangeIndex: 1617 entries, 0 to 1616\n",
+      "Data columns (total 8 columns):\n",
+      " #   Column        Non-Null Count  Dtype  \n",
+      "---  ------        --------------  -----  \n",
+      " 0   model         1617 non-null   object \n",
+      " 1   year          1617 non-null   int64  \n",
+      " 2   transmission  1617 non-null   object \n",
+      " 3   mileage       1617 non-null   int64  \n",
+      " 4   fuelType      1617 non-null   object \n",
+      " 5   tax           1617 non-null   int64  \n",
+      " 6   mpg           1617 non-null   float64\n",
+      " 7   engineSize    1617 non-null   float64\n",
+      "dtypes: float64(2), int64(3), object(3)\n",
+      "memory usage: 101.2+ KB\n"
+     ]
+    }
+   ],
+   "source": [
+    "test.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "519989fb",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.314920Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.314396Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.333215Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.331341Z"
+    },
+    "papermill": {
+     "duration": 0.030058,
+     "end_time": "2023-12-01T16:17:08.336489",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.306431",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.frame.DataFrame'>\n",
+      "RangeIndex: 3759 entries, 0 to 3758\n",
+      "Data columns (total 9 columns):\n",
+      " #   Column        Non-Null Count  Dtype  \n",
+      "---  ------        --------------  -----  \n",
+      " 0   model         3759 non-null   object \n",
+      " 1   year          3759 non-null   int64  \n",
+      " 2   price         3759 non-null   int64  \n",
+      " 3   transmission  3759 non-null   object \n",
+      " 4   mileage       3759 non-null   int64  \n",
+      " 5   fuelType      3759 non-null   object \n",
+      " 6   tax           3759 non-null   int64  \n",
+      " 7   mpg           3759 non-null   float64\n",
+      " 8   engineSize    3759 non-null   float64\n",
+      "dtypes: float64(2), int64(4), object(3)\n",
+      "memory usage: 264.4+ KB\n"
+     ]
+    }
+   ],
+   "source": [
+    "train.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "ba1540b0",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.352095Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.351085Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.360190Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.358874Z"
+    },
+    "papermill": {
+     "duration": 0.019671,
+     "end_time": "2023-12-01T16:17:08.362736",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.343065",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "y_train = train.pop('price')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "fee196cd",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.377874Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.376955Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.382534Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.381541Z"
+    },
+    "papermill": {
+     "duration": 0.016181,
+     "end_time": "2023-12-01T16:17:08.385044",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.368863",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "x_train = train\n",
+    "x_test = test"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "b1cba7f2",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.399951Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.399207Z",
+     "iopub.status.idle": "2023-12-01T16:17:08.407925Z",
+     "shell.execute_reply": "2023-12-01T16:17:08.406401Z"
+    },
+    "papermill": {
+     "duration": 0.019627,
+     "end_time": "2023-12-01T16:17:08.410623",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.390996",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "((3759, 8), (3759,), (1617, 8))"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x_train.shape,y_train.shape,x_test.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "4c94bfd2",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-12-01T16:17:08.427407Z",
+     "iopub.status.busy": "2023-12-01T16:17:08.426468Z",
+     "iopub.status.idle": "2023-12-01T16:17:11.709576Z",
+     "shell.execute_reply": "2023-12-01T16:17:11.708165Z"
+    },
+    "papermill": {
+     "duration": 3.294953,
+     "end_time": "2023-12-01T16:17:11.712887",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:08.417934",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1434.909797667917\n"
+     ]
+    }
+   ],
+   "source": [
+    "# #컬럼 정리\n",
+    "# model = x_test['model'].copy()\n",
+    "\n",
+    "# x_train = x_train.drop(columns = 'model')\n",
+    "# x_test = x_test.drop(columns = 'model')\n",
+    "\n",
+    "#원핫 인코딩\n",
+    "x_train = pd.get_dummies(x_train)\n",
+    "x_test = pd.get_dummies(x_test)[x_train.columns]\n",
+    "\n",
+    "#데이터 분리\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "xtr, xval, ytr, yval = train_test_split(x_train, y_train,test_size = 0.2, random_state = 0xC0FFEE )\n",
+    "#데이터 모델링\n",
+    "from sklearn.ensemble import RandomForestRegressor\n",
+    "\n",
+    "rf = RandomForestRegressor(random_state = 0xC0FFEE)\n",
+    "rf.fit(xtr,ytr)\n",
+    "y_val_pred = rf.predict(xval)\n",
+    "\n",
+    "#데이터 평가 RMSE\n",
+    "from sklearn.metrics import mean_squared_error\n",
+    "mse = mean_squared_error(yval,y_val_pred)\n",
+    "rmse = mse ** 0.5\n",
+    "print(rmse)\n",
+    "\n",
+    "#모델 적용\n",
+    "y_result = rf.predict(x_test)\n",
+    "result = pd.DataFrame({'id': x_test.index,'price':y_result}).to_csv(\"submission.csv\", index=False)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7e8a558f",
+   "metadata": {
+    "papermill": {
+     "duration": 0.005808,
+     "end_time": "2023-12-01T16:17:11.725066",
+     "exception": false,
+     "start_time": "2023-12-01T16:17:11.719258",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "databundleVersionId": 5874615,
+     "sourceId": 54007,
+     "sourceType": "competition"
+    }
+   ],
+   "dockerImageVersionId": 30587,
+   "isGpuEnabled": false,
+   "isInternetEnabled": true,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.12"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 9.022871,
+   "end_time": "2023-12-01T16:17:12.757218",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2023-12-01T16:17:03.734347",
+   "version": "2.4.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
